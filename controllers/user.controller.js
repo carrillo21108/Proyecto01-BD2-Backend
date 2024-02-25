@@ -10,7 +10,7 @@ function login(req,res){
         {$project:{"name":1,"credentials.mail":1}}
     ]).exec()
     .then(function(result){
-        if(result==null){
+        if(result.length==0){
             res.send({message:"Contraseña y/o correo electrónico incorrecto."});
         }else{
             res.send(result);
@@ -62,11 +62,34 @@ function profile(req,res){
         console.log(err);
         res.status(500).send({message:'Error general'});
     });
+}
 
+function updateUser(req,res){
+    var params = req.body;
+
+    User
+    .findOneAndUpdate({"credentials.mail":params.mail},
+    {$set:{"credentials.mail":params.mail,
+    "credentials.password":params.password,
+    age:params.age,
+    genre:params.genre}},{new:true})
+    .exec()
+    .then(function(result){
+        if(result==null){
+            res.send({message:'Usuario no actualizado'});
+        }else{
+            res.send(result);
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
 }
 
 module.exports = {
     login,
     create,
-    profile
+    profile,
+    updateUser
 }
