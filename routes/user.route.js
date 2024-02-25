@@ -4,7 +4,7 @@ var userController = require('../controllers/user.controller');
 var api = express.Router();
 
 api.post('/login',userController.login);
-//api.post('/createUser',userController.create);
+api.post('/createUser',userController.create);
 //api.post('/inLikeMovie',userController.likeMovie);
 //api.post('/disLikeMovie',userController.dislikeMovie);
 //api.post('/inLikeGenre',userController.likeGenre);

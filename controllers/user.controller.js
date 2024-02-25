@@ -1,4 +1,5 @@
 var User = require('../models/user.model');
+var Credential = require('../models/credential.model');
 
 function login(req,res){
     var params = req.body;
@@ -20,6 +21,32 @@ function login(req,res){
     });
 }
 
+function create(req,res){
+    var params = req.body;
+    var user = new User();
+    var credential = new Credential()
+
+    user.name = params.name;
+    user.lastname = params.lastname;
+    user.age = parseInt(params.age);
+    user.gender = params.gender;
+    credential.mail = params.mail;
+    credential.password = params.password;
+    user.credentials = credential
+    user.likedMovies = [];
+    user.likedGenres = [];
+
+    user.save()
+    .then(function(){
+        res.send({message:'Usuario agregado con exito a la DB.'});
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
+
 module.exports = {
-    login
+    login,
+    create
 }
