@@ -4,10 +4,11 @@ var Credential = require('../models/credential.model');
 function login(req,res){
     var params = req.body;
 
-    User.findOne({
-        "credentials.mail":params.mail,
-        "credentials.password":params.password
-    }).exec()
+    User.aggregate([
+        {$match:{"credentials.mail":params.mail,
+        "credentials.password":params.password}},
+        {$project:{"name":1,"credentials.mail":1}}
+    ]).exec()
     .then(function(result){
         if(result==null){
             res.send({message:"Contraseña y/o correo electrónico incorrecto."});
@@ -46,7 +47,26 @@ function create(req,res){
     });
 }
 
+function profile(req,res){
+    var params = req.body;
+    User.findOne({"credentials.mail":params.mail})
+    .exec()
+    .then(function(result){
+        if(result==null){
+            res.send({message:"Perfil de usuario no encontrado."});
+        }else{
+            res.send(result);
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+
+}
+
 module.exports = {
     login,
-    create
+    create,
+    profile
 }

@@ -9,7 +9,7 @@ api.post('/createUser',userController.create);
 //api.post('/disLikeMovie',userController.dislikeMovie);
 //api.post('/inLikeGenre',userController.likeGenre);
 //api.post('/disLikeGenre',userController.dislikeGenre);
-//api.post('/profile',userController.profile);
+api.post('/profile',userController.profile);
 //api.post('/getLikesUser',userController.getLikesUser);
 //api.post('/getLikeUserMovie',userController.getLikeUserMovie);
 //api.post('/updateUser',userController.updateUser);
