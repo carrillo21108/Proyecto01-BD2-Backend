@@ -13,6 +13,6 @@ api.post('/profile',userController.profile);
 //api.post('/getLikesUser',userController.getLikesUser);
 //api.post('/getLikeUserMovie',userController.getLikeUserMovie);
 api.post('/updateUser',userController.updateUser);
-//api.post('/deleteUser',userController.deleteUser);
+api.post('/deleteUser',userController.deleteUser);
 
 module.exports = api;

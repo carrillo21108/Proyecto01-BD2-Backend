@@ -87,9 +87,29 @@ function updateUser(req,res){
     });
 }
 
+function deleteUser(req,res){
+    var params = req.body;
+
+    User
+    .deleteOne({"credentials.mail":params.mail})
+    .exec()
+    .then(function(result){
+        if(result["deletedCount"]==0){
+            res.send({message:'Usuario no eliminado'});
+        }else{
+            res.send({message:'Usuario eliminado con exito'});
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
+
 module.exports = {
     login,
     create,
     profile,
-    updateUser
+    updateUser,
+    deleteUser
 }
