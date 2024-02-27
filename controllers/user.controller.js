@@ -68,11 +68,11 @@ function updateUser(req,res){
     var params = req.body;
 
     User
-    .findOneAndUpdate({"credentials.mail":params.mail},
+    .findOneAndUpdate({"credentials.mail":params.currentMail},
     {$set:{"credentials.mail":params.mail,
     "credentials.password":params.password,
     age:params.age,
-    genre:params.genre}},{new:true})
+    gender:params.gender}},{new:true})
     .exec()
     .then(function(result){
         if(result==null){
@@ -106,10 +106,138 @@ function deleteUser(req,res){
     });
 }
 
+function likeMovie(req,res){
+    var params = req.body;
+    
+    User
+    .findOneAndUpdate({"credentials.mail":params.mail},
+    {$push:{likedMovies:params.movieId}},{new:true})
+    .exec()
+    .then(function(result){
+        if(result==null){
+            res.send({message:'Relacion IN_LIKE_MOVIE no creada'});
+        }else{
+            res.send({message:'Relacion IN_LIKE_MOVIE creada con exito.'});
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
+
+function dislikeMovie(req,res){
+    var params = req.body;
+    
+    User
+    .findOneAndUpdate({"credentials.mail":params.mail},
+    {$pull:{likedMovies:params.movieId}},{new:true})
+    .exec()
+    .then(function(result){
+        if(result==null){
+            res.send({message:'Relacion IN_LIKE_MOVIE no eliminada'});
+        }else{
+            res.send({message:'Relacion IN_LIKE_MOVIE eliminada con exito.'});
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
+
+function likeGenre(req,res){
+    var params = req.body;
+    
+    User
+    .findOneAndUpdate({"credentials.mail":params.mail},
+    {$push:{likedGenres:params.genreId}},{new:true})
+    .exec()
+    .then(function(result){
+        if(result==null){
+            res.send({message:'Relacion IN_LIKE_GENRE no creada'});
+        }else{
+            res.send({message:'Relacion IN_LIKE_GENRE creada con exito.'});
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
+
+function dislikeGenre(req,res){
+    var params = req.body;
+    
+    User
+    .findOneAndUpdate({"credentials.mail":params.mail},
+    {$pull:{likedGenres:params.genreId}},{new:true})
+    .exec()
+    .then(function(result){
+        if(result==null){
+            res.send({message:'Relacion IN_LIKE_GENRE no eliminada'});
+        }else{
+            res.send({message:'Relacion IN_LIKE_GENRE eliminada con exito.'});
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
+
+function getLikesUser(req,res){
+    var params = req.body;
+
+    User
+    .aggregate([
+        {$match:{"credentials.mail":params.mail}},
+        {$project:{"likedMovies":1}}
+    ])
+    .exec()
+    .then(function(result){
+        if(result.length==0){
+            res.send({message:"Peliculas no encontradas."});
+        }else{
+            res.send(result);
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
+
+function getLikeUserMovie(req,res){
+    var params = req.body;
+
+    User
+    .findOne({"credentials.mail":params.mail,"likedMovies":{$elemMatch:{$eq:params.movieId}}})
+    .exec()
+    .then(function(result){
+        if(result==null){
+            res.send({message:"Pelicula sin like de usuario."});
+        }else{
+            res.send({message:"Pelicula con like de usuario."});
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
+
+
 module.exports = {
     login,
     create,
     profile,
     updateUser,
-    deleteUser
+    deleteUser,
+    likeMovie,
+    dislikeMovie,
+    likeGenre,
+    dislikeGenre,
+    getLikesUser,
+    getLikeUserMovie
 }
