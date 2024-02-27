@@ -9,12 +9,12 @@ var movieSchema = Schema({
     original_language:String,
     original_title:String,
     overview:String,
-    popularity:Float32Array,
+    popularity:Number,
     poster_path:String,
     release_date:String,
     title:String,
     video:Boolean,
-    vote_avarage:Float32Array,
+    vote_avarage:Number,
     vote_count:Number
 });
 

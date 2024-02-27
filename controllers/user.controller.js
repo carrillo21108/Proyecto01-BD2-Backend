@@ -25,7 +25,7 @@ function login(req,res){
 function create(req,res){
     var params = req.body;
     var user = new User();
-    var credential = new Credential()
+    var credential = new Credential();
 
     user.name = params.name;
     user.lastname = params.lastname;
@@ -227,6 +227,28 @@ function getLikeUserMovie(req,res){
     });
 }
 
+function getLikesGenre(req,res){
+    var params = req.body;
+
+    User
+    .aggregate([
+        {$match:{"credentials.mail":params.mail}},
+        {$project:{"likedGenres":1}}
+    ])
+    .exec()
+    .then(function(result){
+        if(result.length==0){
+            res.send({message:"Géneros no encontrados."});
+        }else{
+            res.send(result);
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
+
 
 module.exports = {
     login,
@@ -239,5 +261,6 @@ module.exports = {
     likeGenre,
     dislikeGenre,
     getLikesUser,
-    getLikeUserMovie
+    getLikeUserMovie,
+    getLikesGenre
 }

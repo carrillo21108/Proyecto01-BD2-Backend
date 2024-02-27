@@ -8,7 +8,7 @@ var app = express();
 //View Engine
 
 var userRoutes = require('./routes/user.route');
-//var movieRoutes = require('./routes/movie.route');
+var movieRoutes = require('./routes/movie.route');
 //var genreRoutes = require('./routes/genre.route');
 
 app.set('views', path.join(__dirname,'views'));
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 app.use(userRoutes);
-//app.use(movieRoutes);
+app.use(movieRoutes);
 //app.use(genreRoutes);
 
 module.exports = app;
