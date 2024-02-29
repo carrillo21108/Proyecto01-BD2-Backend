@@ -68,11 +68,13 @@ function updateUser(req,res){
     var params = req.body;
 
     User
-    .findOneAndUpdate({"credentials.mail":params.currentMail},
+    .findOneAndUpdate(
+    {"credentials.mail":params.currentMail},
     {$set:{"credentials.mail":params.mail,
-    "credentials.password":params.password,
-    age:params.age,
-    gender:params.gender}},{new:true})
+            "credentials.password":params.password,
+            age:params.age,
+            gender:params.gender}
+    },{new:true})
     .exec()
     .then(function(result){
         if(result==null){
@@ -110,7 +112,8 @@ function likeMovie(req,res){
     var params = req.body;
     
     User
-    .findOneAndUpdate({"credentials.mail":params.mail},
+    .findOneAndUpdate(
+    {"credentials.mail":params.mail},
     {$push:{likedMovies:params.movieId}},{new:true})
     .exec()
     .then(function(result){
@@ -130,7 +133,8 @@ function dislikeMovie(req,res){
     var params = req.body;
     
     User
-    .findOneAndUpdate({"credentials.mail":params.mail},
+    .findOneAndUpdate(
+    {"credentials.mail":params.mail},
     {$pull:{likedMovies:params.movieId}},{new:true})
     .exec()
     .then(function(result){
@@ -150,8 +154,9 @@ function likeGenre(req,res){
     var params = req.body;
     
     User
-    .findOneAndUpdate({"credentials.mail":params.mail},
-    {$push:{likedGenres:params.genreId}},{new:true})
+    .findOneAndUpdate(
+    {"credentials.mail":params.mail},
+    {$push:{likedGenres:parseInt(params.genreId)}},{new:true})
     .exec()
     .then(function(result){
         if(result==null){
@@ -170,7 +175,8 @@ function dislikeGenre(req,res){
     var params = req.body;
     
     User
-    .findOneAndUpdate({"credentials.mail":params.mail},
+    .findOneAndUpdate(
+    {"credentials.mail":params.mail},
     {$pull:{likedGenres:params.genreId}},{new:true})
     .exec()
     .then(function(result){

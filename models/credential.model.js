@@ -6,4 +6,4 @@ var credentialSchema = Schema({
     password:String
 });
 
-module.exports = mongoose.model('credential', credentialSchema);
+module.exports = mongoose.model('credentials', credentialSchema);

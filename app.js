@@ -9,7 +9,7 @@ var app = express();
 
 var userRoutes = require('./routes/user.route');
 var movieRoutes = require('./routes/movie.route');
-//var genreRoutes = require('./routes/genre.route');
+var genreRoutes = require('./routes/genre.route');
 
 app.set('views', path.join(__dirname,'views'));
 app.set('view engine','ejs');
@@ -28,6 +28,6 @@ app.use((req, res, next) => {
 
 app.use(userRoutes);
 app.use(movieRoutes);
-//app.use(genreRoutes);
+app.use(genreRoutes);
 
 module.exports = app;

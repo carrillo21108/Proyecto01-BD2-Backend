@@ -18,4 +18,4 @@ var movieSchema = Schema({
     vote_count:Number
 });
 
-module.exports = mongoose.model('movie', movieSchema);
+module.exports = mongoose.model('movies', movieSchema);

@@ -10,8 +10,8 @@ var userSchema = Schema({
         mail:String,
         password:String
     },
-    likedMovies: [{type: Schema.Types.ObjectId, ref:'movie'}],
-    likedGenres: [{type: Schema.Types.ObjectId, ref:'genre'}]
+    likedMovies: [{type: Schema.Types.ObjectId, ref:'movies'}],
+    likedGenres: Array
 });
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('users', userSchema);
