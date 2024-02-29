@@ -31,8 +31,11 @@ function create(req,res){
     user.lastname = params.lastname;
     user.age = parseInt(params.age);
     user.gender = params.gender;
+
+    credential.creationDate = new Date();
     credential.mail = params.mail;
     credential.password = params.password;
+
     user.credentials = credential
     user.likedMovies = [];
     user.likedGenres = [];

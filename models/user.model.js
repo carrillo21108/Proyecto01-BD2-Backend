@@ -7,6 +7,7 @@ var userSchema = Schema({
     age:Number,
     gender:String,
     credentials: {
+        creationDate:Date,
         mail:String,
         password:String
     },

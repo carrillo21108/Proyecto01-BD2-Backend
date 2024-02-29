@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var credentialSchema = Schema({
+    creationDate:Date,
     mail:String,
     password:String
 });
