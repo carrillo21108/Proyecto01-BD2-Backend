@@ -15,7 +15,21 @@ var movieSchema = Schema({
     title:String,
     video:Boolean,
     vote_avarage:Number,
-    vote_count:Number
+    vote_count:Number,
+    cast:[{
+        adult:Boolean,
+        gender:Number,
+        id:String,
+        known_for_department:String,
+        name:String,
+        original_name:String,
+        popularity:Number,
+        profile_path:String,
+        cast_id:Number,
+        character:String,
+        credit_id:String,
+        order:Number
+    }]
 });
 
-module.exports = mongoose.model('movies', movieSchema);
+module.exports = mongoose.model('movie', movieSchema);

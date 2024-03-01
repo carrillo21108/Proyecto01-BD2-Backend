@@ -8,5 +8,7 @@ var api = express.Router();
 api.get('/getMovies',movieController.getMovies);
 api.post('/genreRecommendation',movieController.genreRecommendation);
 api.post('/userRecommendation',movieController.userRecommendation);
+api.post('/popularRecommendation',movieController.popularRecommendation);
+api.post('/releaseRecommendation',movieController.releaseRecommendation);
 
 module.exports = api;

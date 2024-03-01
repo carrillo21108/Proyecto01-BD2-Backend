@@ -1,12 +1,9 @@
 var Genre = require('../models/genre.model');
 
 function getGenres(req,res){
-    var params = req.body;
     
     Genre
-    .aggregate([
-        {$skip:parseInt(params.skip)},
-        {$limit:parseInt(params.limit)}])
+    .find({})
     .then(function(result){
         if(result.length==0){
             res.send({message:"Generos no encontrados."});

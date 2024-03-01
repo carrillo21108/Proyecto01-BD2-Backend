@@ -2,11 +2,8 @@ var Movie = require('../models/movie.model');
 var User = require('../models/user.model');
 
 function getMovies(req,res){
-    var params = req.body;
     Movie
-    .aggregate([
-        {$skip:parseInt(params.skip)},
-        {$limit:parseInt(params.limit)}])
+    .find({})
     .then(function(result){
         if(result.length==0){
             res.send({message:"Peliculas no encontradas."});
@@ -32,6 +29,14 @@ function genreRecommendation(req,res){
     Movie
     .aggregate([
     {$match:{genre_ids:{$elemMatch:{$in:genresList}}}},
+    {
+        $group: {
+            _id: "$original_title",  // Agrupar por título
+            doc: { $first: "$$ROOT" }  // $$ROOT se refiere al documento original
+        }
+    },
+    {$replaceRoot: { newRoot: "$doc" } },  // Reemplaza el documento raíz por el documento original
+    {$project:{"_id":1}},
     {$skip:parseInt(params.skip)},
     {$limit:parseInt(params.limit)}])
     .then(function(result){
@@ -59,7 +64,8 @@ function userRecommendation(req,res){
     User
     .aggregate([
     {$match:{likedGenres:{$elemMatch:{$in:genresList}}}},
-    {$project:{"likedMovies":1}},
+    {$unwind:"$likedMovies"},
+    {$project:{"likedMovies._id":1}},
     {$skip:parseInt(params.skip)},
     {$limit:parseInt(params.limit)}])
     .then(function(result){
@@ -75,8 +81,76 @@ function userRecommendation(req,res){
     });
 }
 
+function popularRecommendation(req, res) {
+    var params = req.body;
+
+    Movie.aggregate([
+        {$match: { vote_average: { $gte: 8 }, vote_count: { $gte: 500 } } },
+        {
+            $group: {
+                _id: "$original_title",  // Agrupar por título
+                doc: { $first: "$$ROOT" }  // $$ROOT se refiere al documento original
+            }
+        },
+        {$replaceRoot: { newRoot: "$doc" } },  // Reemplaza el documento raíz por el documento original
+        {$sort: { popularity: -1 } },
+        {$project:{"_id":1}},
+        {$skip: parseInt(params.skip) },
+        {$limit: parseInt(params.limit) }
+    ])
+    .then(function(result) {
+        if (result.length == 0) {
+            res.send({ message: "Peliculas no encontradas." });
+        } else {
+            res.send(result);
+        }
+    })
+    .catch(function(err) {
+        console.log(err);
+        res.status(500).send({ message: 'Error general' });
+    });
+}
+
+
+function releaseRecommendation(req,res){
+    var params = req.body;
+
+    Movie.aggregate([
+        {$match: { $and:[
+            {vote_average: { $gte: 5 }},
+            {vote_count: { $gte: 100 }},
+            {release_date: { $gte: "2020-01-01" }},
+            {release_date: { $lte: "2024-02-01" }}
+        ] }},
+        {
+            $group: {
+                _id: "$original_title",  // Agrupar por título
+                doc: { $first: "$$ROOT" }  // $$ROOT se refiere al documento original
+            }
+        },
+        {$replaceRoot: { newRoot: "$doc" } },  // Reemplaza el documento raíz por el documento original
+        {$sort: { release_date: -1 } },
+        {$project:{"_id":1}},
+        {$skip: parseInt(params.skip) },
+        {$limit: parseInt(params.limit) }
+    ])
+    .then(function(result) {
+        if (result.length == 0) {
+            res.send({ message: "Peliculas no encontradas." });
+        } else {
+            res.send(result);
+        }
+    })
+    .catch(function(err) {
+        console.log(err);
+        res.status(500).send({ message: 'Error general' });
+    });
+}
+
 module.exports = {
     getMovies,
+    popularRecommendation,
+    releaseRecommendation,
     genreRecommendation,
     userRecommendation
 }

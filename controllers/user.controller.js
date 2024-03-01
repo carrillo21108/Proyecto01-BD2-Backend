@@ -1,5 +1,4 @@
 var User = require('../models/user.model');
-var Credential = require('../models/credential.model');
 
 function login(req,res){
     var params = req.body;
@@ -25,7 +24,8 @@ function login(req,res){
 function create(req,res){
     var params = req.body;
     var user = new User();
-    var credential = new Credential();
+
+    var credential = {};
 
     user.name = params.name;
     user.lastname = params.lastname;
@@ -73,10 +73,11 @@ function updateUser(req,res){
     User
     .findOneAndUpdate(
     {"credentials.mail":params.currentMail},
-    {$set:{"credentials.mail":params.mail,
-            "credentials.password":params.password,
-            age:params.age,
-            gender:params.gender}
+    {$set:
+        {"credentials.mail":params.mail,
+         "credentials.password":params.password,
+         age:params.age,
+         gender:params.gender}
     },{new:true})
     .exec()
     .then(function(result){
@@ -117,9 +118,12 @@ function likeMovie(req,res){
     User
     .findOneAndUpdate(
     {"credentials.mail":params.mail},
-    {$push:{likedMovies:params.movieId}},{new:true})
+    {$push:
+        {likedMovies:params.movieId}
+    },{new:true})
     .exec()
     .then(function(result){
+        console.log(params.movieId);
         if(result==null){
             res.send({message:'Relacion IN_LIKE_MOVIE no creada'});
         }else{
@@ -138,7 +142,9 @@ function dislikeMovie(req,res){
     User
     .findOneAndUpdate(
     {"credentials.mail":params.mail},
-    {$pull:{likedMovies:params.movieId}},{new:true})
+    {$pull:
+        {likedMovies:params.movieId}
+    },{new:true})
     .exec()
     .then(function(result){
         if(result==null){
@@ -159,7 +165,9 @@ function likeGenre(req,res){
     User
     .findOneAndUpdate(
     {"credentials.mail":params.mail},
-    {$push:{likedGenres:parseInt(params.genreId)}},{new:true})
+    {$push:
+        {likedGenres:parseInt(params.genreId)}
+    },{new:true})
     .exec()
     .then(function(result){
         if(result==null){
@@ -180,35 +188,15 @@ function dislikeGenre(req,res){
     User
     .findOneAndUpdate(
     {"credentials.mail":params.mail},
-    {$pull:{likedGenres:params.genreId}},{new:true})
+    {$pull:
+        {likedGenres:params.genreId}
+    },{new:true})
     .exec()
     .then(function(result){
         if(result==null){
             res.send({message:'Relacion IN_LIKE_GENRE no eliminada'});
         }else{
             res.send({message:'Relacion IN_LIKE_GENRE eliminada con exito.'});
-        }
-    })
-    .catch(function(err){
-        console.log(err);
-        res.status(500).send({message:'Error general'});
-    });
-}
-
-function getLikesUser(req,res){
-    var params = req.body;
-
-    User
-    .aggregate([
-        {$match:{"credentials.mail":params.mail}},
-        {$project:{"likedMovies":1}}
-    ])
-    .exec()
-    .then(function(result){
-        if(result.length==0){
-            res.send({message:"Peliculas no encontradas."});
-        }else{
-            res.send(result);
         }
     })
     .catch(function(err){
@@ -269,7 +257,6 @@ module.exports = {
     dislikeMovie,
     likeGenre,
     dislikeGenre,
-    getLikesUser,
     getLikeUserMovie,
     getLikesGenre
 }
