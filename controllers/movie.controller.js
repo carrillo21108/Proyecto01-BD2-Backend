@@ -1,9 +1,48 @@
 var Movie = require('../models/movie.model');
 var User = require('../models/user.model');
+var ObjectId = require('mongoose').Types.ObjectId;
+
+function getMoviesCount(req,res){
+    Movie
+    .distinct("original_title")
+    .then(function(result){
+        res.send(result);
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
 
 function getMovies(req,res){
     Movie
     .find({})
+    .then(function(result){
+        if(result.length==0){
+            res.send({message:"Peliculas no encontradas."});
+        }else{
+            res.send(result);
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
+
+function getMoviesDetail(req,res){
+    var params = req.body;
+
+    var movies = params.movies.split(",")
+    var moviesList = []
+    movies.forEach((elem,idx)=>{
+        moviesList.push(new ObjectId(elem))
+    })
+
+    console.log(moviesList)
+
+    Movie
+    .aggregate([{$match:{_id:{$in:moviesList}}}])
     .then(function(result){
         if(result.length==0){
             res.send({message:"Peliculas no encontradas."});
@@ -149,8 +188,10 @@ function releaseRecommendation(req,res){
 
 module.exports = {
     getMovies,
+    getMoviesCount,
     popularRecommendation,
     releaseRecommendation,
     genreRecommendation,
-    userRecommendation
+    userRecommendation,
+    getMoviesDetail
 }

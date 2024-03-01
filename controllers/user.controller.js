@@ -6,7 +6,7 @@ function login(req,res){
     User.aggregate([
         {$match:{"credentials.mail":params.mail,
         "credentials.password":params.password}},
-        {$project:{"name":1,"credentials.mail":1}}
+        {$project:{"name":1,"credentials.mail":1,"likedGenres":1}}
     ]).exec()
     .then(function(result){
         if(result.length==0){
