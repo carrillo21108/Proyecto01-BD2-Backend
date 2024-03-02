@@ -102,9 +102,10 @@ function userRecommendation(req,res){
 
     User
     .aggregate([
-    {$match:{likedGenres:{$elemMatch:{$in:genresList}}}},
+    {$match:{likedGenres:{$elemMatch:{$in:genresList}},"credentials.mail":{$ne:params.mail}}},
     {$unwind:"$likedMovies"},
-    {$project:{"likedMovies._id":1}},
+    {$addFields: {"_id": "$likedMovies"}},
+    {$project:{"_id":1}},
     {$skip:parseInt(params.skip)},
     {$limit:parseInt(params.limit)}])
     .then(function(result){
