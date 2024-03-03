@@ -4,9 +4,9 @@ var ObjectId = require('mongoose').Types.ObjectId;
 
 function getMoviesCount(req,res){
     Movie
-    .distinct("original_title")
+    .countDocuments({})
     .then(function(result){
-        res.send(result);
+        res.send({message:result});
     })
     .catch(function(err){
         console.log(err);

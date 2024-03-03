@@ -17,6 +17,19 @@ function getGenres(req,res){
     });
 }
 
+function getGenresCount(req,res){
+    Genre
+    .countDocuments({})
+    .then(function(result){
+        res.send({message:result});
+    })
+    .catch(function(err){
+        console.log(err);
+        res.status(500).send({message:'Error general'});
+    });
+}
+
 module.exports = {
-    getGenres
+    getGenres,
+    getGenresCount
 }
